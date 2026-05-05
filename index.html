@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Bar — live wind</title>
+<title>Chichester Bar — live wind</title>
 <style>
   :root {
     color-scheme: light dark;
@@ -50,7 +50,11 @@
     margin: 0 auto 1.5rem;
   }
   svg.rose { width: 100%; height: auto; display: block; }
-  #arrow { transition: transform 0.8s cubic-bezier(.4,0,.2,1); transform-origin: 180px 180px; }
+  #arrow {
+    transform-box: view-box;
+    transform-origin: 180px 180px;
+    transition: transform 0.8s cubic-bezier(.4,0,.2,1);
+  }
   .meta-row {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -266,8 +270,7 @@ async function refresh() {
     if (w.dev !== undefined) document.getElementById("dev").textContent = "±" + w.dev + "°";
 
     if (w.dir && DIRS[w.dir] !== undefined) {
-      document.getElementById("arrow").setAttribute("transform",
-        "rotate(" + DIRS[w.dir] + " 180 180)");
+      document.getElementById("arrow").style.transform = "rotate(" + DIRS[w.dir] + "deg)";
     }
 
     const a = parseAtmos(j.atmos || []);
