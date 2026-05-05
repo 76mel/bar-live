@@ -1,0 +1,15 @@
+<!doctype html>
+<title>Chichester Bar live</title>
+<style>body{font:16px system-ui;max-width:40rem;margin:2rem auto;padding:0 1rem}
+pre{background:#f4f4f4;padding:1rem;border-radius:8px}</style>
+<h1>Chimet — Chichester Bar</h1>
+<p>Updated <span id=t>—</span></p>
+<pre id=d>loading…</pre>
+<script>
+fetch("data.json?" + Date.now()).then(r => r.json()).then(j => {
+  document.getElementById("t").textContent = new Date(j.fetched).toLocaleString();
+  document.getElementById("d").textContent =
+    ["wind","sea","atmos"].map(k => (j[k]||[]).join("\n")).join("\n\n");
+}).catch(() => document.getElementById("d").textContent = "no data yet — wait for first run");
+setTimeout(() => location.reload(), 5*60*1000);
+</script>
