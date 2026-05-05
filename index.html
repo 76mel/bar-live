@@ -1,15 +1,291 @@
 <!doctype html>
-<title>Chichester Bar live</title>
-<style>body{font:16px system-ui;max-width:40rem;margin:2rem auto;padding:0 1rem}
-pre{background:#f4f4f4;padding:1rem;border-radius:8px}</style>
-<h1>Chichester Bar</h1>
-<p>Updated <span id=t>—</span></p>
-<pre id=d>loading…</pre>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bar — live wind</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #fafaf7;
+    --surface: #ffffff;
+    --ink: #1a1a1a;
+    --muted: #6b7280;
+    --line: #e5e7eb;
+    --tick: #cbd5e1;
+    --rose-bg: #f8fafc;
+    --accent: #0c4a6e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0a0a0a;
+      --surface: #161616;
+      --ink: #f5f5f5;
+      --muted: #9ca3af;
+      --line: #2a2a2a;
+      --tick: #404040;
+      --rose-bg: #141414;
+      --accent: #60a5fa;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  main {
+    max-width: 480px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+  header { text-align: center; margin-bottom: 1.5rem; }
+  h1 { font-size: 22px; font-weight: 500; margin: 0 0 4px; }
+  .sub { color: var(--muted); font-size: 13px; margin: 0; }
+  .rose-wrap {
+    aspect-ratio: 1;
+    max-width: 380px;
+    margin: 0 auto 1.5rem;
+  }
+  svg.rose { width: 100%; height: auto; display: block; }
+  #arrow { transition: transform 0.8s cubic-bezier(.4,0,.2,1); transform-origin: 180px 180px; }
+  .meta-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+  }
+  .meta-row.two { grid-template-columns: 1fr 1fr; }
+  .meta-cell {
+    background: var(--surface);
+    border: 0.5px solid var(--line);
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+  }
+  .meta-label {
+    color: var(--muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 0 0 4px;
+  }
+  .meta-value { font-size: 16px; font-weight: 500; margin: 0; }
+  .stamp { text-align: center; color: var(--muted); font-size: 12px; margin-top: 1.5rem; }
+  .stamp .dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #16a34a;
+    margin-right: 6px;
+    vertical-align: 1px;
+  }
+  .stamp.stale .dot { background: #ca8a04; }
+  .stamp.old   .dot { background: #dc2626; }
+  .stamp.old   { color: #dc2626; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Chichester Bar</h1>
+    <p class="sub">live wind</p>
+  </header>
+
+  <div class="rose-wrap">
+    <svg class="rose" viewBox="0 0 360 360" role="img" aria-label="Wind direction compass">
+      <!-- background rings -->
+      <circle cx="180" cy="180" r="160" fill="var(--rose-bg)" stroke="var(--line)" stroke-width="1"/>
+      <circle cx="180" cy="180" r="118" fill="none" stroke="var(--line)" stroke-width="0.5"/>
+
+      <!-- tick marks (cardinals longer) -->
+      <g stroke="var(--tick)" stroke-width="1" fill="none" stroke-linecap="round">
+        <line x1="180" y1="35"  x2="180" y2="20"/>
+        <line x1="325" y1="180" x2="340" y2="180"/>
+        <line x1="180" y1="325" x2="180" y2="340"/>
+        <line x1="35"  y1="180" x2="20"  y2="180"/>
+        <line x1="238.2" y1="39.6"  x2="241.2" y2="32.2"/>
+        <line x1="287.5" y1="72.5"  x2="293.1" y2="66.9"/>
+        <line x1="320.4" y1="121.8" x2="327.8" y2="118.8"/>
+        <line x1="320.4" y1="238.2" x2="327.8" y2="241.2"/>
+        <line x1="287.5" y1="287.5" x2="293.1" y2="293.1"/>
+        <line x1="238.2" y1="320.4" x2="241.2" y2="327.8"/>
+        <line x1="121.8" y1="320.4" x2="118.8" y2="327.8"/>
+        <line x1="72.5"  y1="287.5" x2="66.9"  y2="293.1"/>
+        <line x1="39.6"  y1="238.2" x2="32.2"  y2="241.2"/>
+        <line x1="39.6"  y1="121.8" x2="32.2"  y2="118.8"/>
+        <line x1="72.5"  y1="72.5"  x2="66.9"  y2="66.9"/>
+        <line x1="121.8" y1="39.6"  x2="118.8" y2="32.2"/>
+      </g>
+
+      <!-- cardinal labels -->
+      <g fill="var(--ink)" font-family="inherit" font-size="14" font-weight="500" text-anchor="middle">
+        <text x="180" y="14">N</text>
+        <text x="350" y="184">E</text>
+        <text x="180" y="356">S</text>
+        <text x="10"  y="184">W</text>
+      </g>
+      <!-- intercardinal labels -->
+      <g fill="var(--muted)" font-family="inherit" font-size="11" text-anchor="middle">
+        <text x="297" y="68">NE</text>
+        <text x="297" y="296">SE</text>
+        <text x="63"  y="296">SW</text>
+        <text x="63"  y="68">NW</text>
+      </g>
+
+      <!-- arrow (rotates to FROM-direction; default points down at N) -->
+      <g id="arrow">
+        <path id="arrowPath"
+              d="M 177 25 L 183 25 L 183 50 L 190 50 L 180 65 L 170 50 L 177 50 Z"
+              fill="var(--accent)"/>
+      </g>
+
+      <!-- center readout -->
+      <g text-anchor="middle" font-family="inherit" fill="var(--ink)">
+        <text x="180" y="172" font-size="44" font-weight="500" id="speed">—</text>
+        <text x="180" y="192" font-size="11" fill="var(--muted)" font-weight="400" letter-spacing="1.5">KNOTS</text>
+        <text x="180" y="220" font-size="14" fill="var(--muted)" font-weight="400" id="gustLabel">gust —</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="meta-row">
+    <div class="meta-cell">
+      <p class="meta-label">From</p>
+      <p class="meta-value" id="dir">—</p>
+    </div>
+    <div class="meta-cell">
+      <p class="meta-label">Beaufort</p>
+      <p class="meta-value" id="bft">—</p>
+    </div>
+    <div class="meta-cell">
+      <p class="meta-label">Variability</p>
+      <p class="meta-value" id="dev">—</p>
+    </div>
+  </div>
+
+  <div class="meta-row two">
+    <div class="meta-cell">
+      <p class="meta-label">Air temp</p>
+      <p class="meta-value" id="temp">—</p>
+    </div>
+    <div class="meta-cell">
+      <p class="meta-label">Pressure</p>
+      <p class="meta-value" id="pres">—</p>
+    </div>
+  </div>
+
+  <p class="stamp" id="stamp"><span class="dot"></span><span id="age">—</span></p>
+</main>
+
 <script>
-fetch("data.json?" + Date.now()).then(r => r.json()).then(j => {
-  document.getElementById("t").textContent = new Date(j.fetched).toLocaleString();
-  document.getElementById("d").textContent =
-    ["wind","sea","atmos"].map(k => (j[k]||[]).join("\n")).join("\n\n");
-}).catch(() => document.getElementById("d").textContent = "no data yet — wait for first run");
-setTimeout(() => location.reload(), 5*60*1000);
+const DIRS = {N:0, NNE:22.5, NE:45, ENE:67.5, E:90, ESE:112.5, SE:135, SSE:157.5,
+              S:180, SSW:202.5, SW:225, WSW:247.5, W:270, WNW:292.5, NW:315, NNW:337.5};
+
+// Beaufort scale colors (calm -> storm)
+const BFT_COLORS = ["#94a3b8","#94a3b8","#7fb3d8","#5494c2","#16a34a",
+                    "#ca8a04","#d97706","#ea580c","#dc2626","#dc2626",
+                    "#991b1b","#991b1b","#7f1d1d"];
+
+function parseWind(lines) {
+  const out = {};
+  for (const line of lines) {
+    let m;
+    if (m = line.match(/Mean Speed\s+([\d.]+)\s*kn?\s*\(F(\d+)\)/i)) {
+      out.mean = parseFloat(m[1]); out.bft = parseInt(m[2]);
+    } else if (m = line.match(/Highest Gust\s+([\d.]+)\s*kn/i)) {
+      out.gust = parseFloat(m[1]);
+    } else if (m = line.match(/Direction\s+([NSEW]{1,3})\b/i)) {
+      out.dir = m[1].toUpperCase();
+    } else if (m = line.match(/Deviation\s+(\d+)/i)) {
+      out.dev = parseInt(m[1]);
+    }
+  }
+  return out;
+}
+
+function parseAtmos(lines) {
+  const out = {};
+  for (const line of lines) {
+    let m;
+    if (m = line.match(/Air Temperature\s+([\d.]+)\s*°?\s*C/i)) {
+      out.temp = parseFloat(m[1]);
+    } else if (m = line.match(/Barometric Pressure\s+([\d.]+)\s*mb/i)) {
+      out.pres = parseFloat(m[1]);
+    }
+  }
+  return out;
+}
+
+let lastFetched = null;
+
+function formatAge(ms) {
+  const mins = Math.floor(ms / 60000);
+  if (mins < 1)   return "just now";
+  if (mins === 1) return "1 min ago";
+  if (mins < 60)  return mins + " mins ago";
+  const hrs = Math.floor(mins / 60);
+  if (hrs === 1)  return "1 hour ago";
+  if (hrs < 24)   return hrs + " hours ago";
+  const days = Math.floor(hrs / 24);
+  return days === 1 ? "1 day ago" : days + " days ago";
+}
+
+function updateAge() {
+  const stamp = document.getElementById("stamp");
+  const age = document.getElementById("age");
+  if (!lastFetched) {
+    age.textContent = "waiting for first run";
+    stamp.className = "stamp old";
+    return;
+  }
+  const ms = Date.now() - lastFetched.getTime();
+  age.textContent = "updated " + formatAge(ms);
+  stamp.title = lastFetched.toLocaleString();
+  const mins = ms / 60000;
+  stamp.className = "stamp" + (mins >= 60 ? " old" : mins >= 20 ? " stale" : "");
+}
+
+async function refresh() {
+  try {
+    const r = await fetch("data.json?" + Date.now());
+    const j = await r.json();
+    const w = parseWind(j.wind || []);
+
+    if (w.mean !== undefined) document.getElementById("speed").textContent = w.mean.toFixed(1);
+    if (w.gust !== undefined) document.getElementById("gustLabel").textContent = "gust " + w.gust.toFixed(1);
+    if (w.dir  !== undefined) document.getElementById("dir").textContent = w.dir;
+    if (w.bft  !== undefined) {
+      document.getElementById("bft").textContent = "F" + w.bft;
+      const c = BFT_COLORS[Math.min(w.bft, 12)];
+      document.getElementById("arrowPath").setAttribute("fill", c);
+    }
+    if (w.dev !== undefined) document.getElementById("dev").textContent = "±" + w.dev + "°";
+
+    if (w.dir && DIRS[w.dir] !== undefined) {
+      document.getElementById("arrow").setAttribute("transform",
+        "rotate(" + DIRS[w.dir] + " 180 180)");
+    }
+
+    const a = parseAtmos(j.atmos || []);
+    if (a.temp !== undefined) document.getElementById("temp").textContent = a.temp.toFixed(1) + "°C";
+    if (a.pres !== undefined) document.getElementById("pres").textContent = a.pres.toFixed(1) + " mb";
+
+    if (j.fetched && j.fetched !== "1970-01-01T00:00:00Z") {
+      lastFetched = new Date(j.fetched);
+    }
+  } catch (e) {
+    document.getElementById("age").textContent = "error: " + e.message;
+  }
+  updateAge();
+}
+refresh();
+setInterval(refresh, 60 * 1000);
+setInterval(updateAge, 30 * 1000);
+setTimeout(() => location.reload(), 5 * 60 * 1000);
 </script>
+</body>
+</html>
