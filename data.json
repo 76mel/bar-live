@@ -1,10 +1,10 @@
 {
-  "fetched": "2026-08-07T05:16:46.776522Z",
+  "fetched": "2026-08-07T06:34:57.165014Z",
   "wind": [
-    "Mean Speed 6.4 kn (F2)",
-    "Highest Gust 7.4 kn (F3)",
+    "Mean Speed 6.5 kn (F2)",
+    "Highest Gust 7.9 kn (F3)",
     "Direction Nw",
-    "Direction Deviation 7 degrees"
+    "Direction Deviation 6 degrees"
   ],
   "sea": [
     "Tidal Height",
@@ -13,12 +13,12 @@
     "Wave Height (mean)",
     "Wave Height (maximum)",
     "Wave Periodicity",
-    "4.01m",
-    "om",
-    "211\u00b0C",
-    "o.1m",
-    "0.15m",
-    "6s"
+    "371m",
+    ".05 m",
+    "2c",
+    "0.09 m",
+    "0.12m",
+    "5s"
   ],
   "atmos": [
     "Air Temperature 15.2\u00b0C",
