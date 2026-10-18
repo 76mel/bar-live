@@ -1,5 +1,5 @@
 {
-  "fetched": "2026-10-18T12:59:12.676275Z",
+  "fetched": "2026-10-18T16:24:37.009488Z",
   "wind": [
     "Direction N",
     "Direction Deviation 0 degrees"
@@ -11,12 +11,11 @@
     "Wave Height (mean)",
     "Wave Height (maximum)",
     "Wave Periodicity",
-    "2.8m",
-    "09 m",
-    "16.1\u00b0C",
-    "o.t1m",
-    "0.15m",
-    "lis"
+    "357m",
+    "15.3\u00b0C",
+    "o.11m",
+    "017m",
+    "is"
   ],
   "atmos": []
 }
